@@ -17,7 +17,7 @@ class ResNetModule(pl.LightningModule):
         return resnet
 
     def forward(self, x):
-        return self.model(x)
+        return self.model(x).flatten(start_dim=1)
 
     def training_step(self, batch, batch_idx):
         x, y = batch
