@@ -7,7 +7,8 @@ from torchvision.models import resnet18
 class ResNetModule(pl.LightningModule):
     def __init__(self):
         super(ResNetModule, self).__init__()
-        self.model = resnet18(pretrained=False, num_classes=10)
+        resnet = resnet18(pretrained=False, num_classes=10)
+        self.model = nn.Sequential(*list(resnet.children())[:-1])
 
     @classmethod
     def from_byol(cls, byol):
