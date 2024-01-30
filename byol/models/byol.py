@@ -1,11 +1,10 @@
-from byol.heads import BYOLPredictionHead, BYOLProjectionHead
+from byol.models.heads import BYOLPredictionHead, BYOLProjectionHead
 from byol.utils import cosine_scheduler, update_momentum, get_default_byol_hparams
 import torch.nn as nn
 import torch
 import pytorch_lightning as pl
 import torchvision.models as models
 from typing import Optional, Dict
-import warnings
 
 
 class BYOL(pl.LightningModule):
@@ -14,7 +13,7 @@ class BYOL(pl.LightningModule):
         hparams = get_default_byol_hparams() if hparams is None else hparams
         self.hparams.update(hparams)
 
-        resnet = models.resnet18()
+        resnet = models.resnet18(num_classes=10, pretrained=False)
 
         # Online network
         self.backbone = nn.Sequential(*list(resnet.children())[:-1])
