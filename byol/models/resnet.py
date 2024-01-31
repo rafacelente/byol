@@ -1,4 +1,3 @@
-from pytorch_lightning.utilities.types import EVAL_DATALOADERS
 import torch.nn as nn
 import torch.optim as optim
 import pytorch_lightning as pl
@@ -11,9 +10,9 @@ class ResNetModule(pl.LightningModule):
         self.model = nn.Sequential(*list(resnet.children())[:-1])
 
     @classmethod
-    def from_byol(cls, byol):
+    def from_byol(cls, byol_module):
         resnet = cls()
-        resnet.model.load_state_dict(byol.backbone.state_dict())
+        resnet.model.load_state_dict(byol_module.backbone.state_dict())
         return resnet
 
     def forward(self, x):
