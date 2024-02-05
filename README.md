@@ -10,6 +10,8 @@ This repo is a Pytorch implementation of BYOL for image classification tasks whi
 
 BYOL is a self-supervised approach to image representation learning. It relies on two neural networks, referred to as the online and target networks, that interact and learn from each other. The goal is to train the online network to predict the target network representation of an augmented view of an image. Simultaneously, the target network is updated with a slow-moving average of the online network.
 
+![BYOL Archictecture](examples/images/byol_architecture.png)
+
 ## Resources
 
 - [BYOL Paper](https://arxiv.org/abs/2006.07733): The original research paper describing the BYOL approach.

@@ -8,15 +8,20 @@ from typing import Optional, Dict
 
 
 class BYOL(pl.LightningModule):
-    def __init__(self, hparams: Optional[Dict]=None):
+    def __init__(self, hparams: Optional[Dict]=None, model: Optional[nn.Module]=None):
         super().__init__()
         hparams = get_default_byol_hparams() if hparams is None else hparams
         self.hparams.update(hparams)
 
-        resnet = models.resnet18(num_classes=10, pretrained=False)
+        if model is None:
+            resnet = models.resnet18(pretrained=False)
+            self.backbone = nn.Sequential(*list(resnet.children())[:-1])
+            self.target_backbone = nn.Sequential(*list(resnet.children())[:-1])
+        else:
+            self.backbone = model
+            self.target_backbone = model
 
         # Online network
-        self.backbone = nn.Sequential(*list(resnet.children())[:-1])
         self.projection_head = BYOLProjectionHead(
             self.hparams["input_dim"],
             self.hparams["hidden_dim"],
@@ -29,7 +34,6 @@ class BYOL(pl.LightningModule):
         )
 
         # Target Network
-        self.target_backbone = nn.Sequential(*list(resnet.children())[:-1])
         self.target_projection_head = BYOLProjectionHead(
             self.hparams["input_dim"],
             self.hparams["hidden_dim"],
