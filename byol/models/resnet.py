@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 import torch.optim as optim
 import pytorch_lightning as pl
@@ -36,9 +37,10 @@ class ResNetModule(pl.LightningModule):
     def test_step(self, batch, batch_idx):
         x, y = batch
         y_hat = self(x)
+        preds  = torch.argmax(y_hat, dim=1)
         loss = nn.CrossEntropyLoss()(y_hat, y)
-        accuracy = Accuracy()
-        acc = accuracy(y_hat, y)
+        accuracy = Accuracy(task='multiclass', num_classes=10).to(self.device)
+        acc = accuracy(preds, y)
         self.log('accuracy', acc)
         self.log('test_loss', loss)
         return loss
