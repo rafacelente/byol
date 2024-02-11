@@ -2,6 +2,7 @@ import torch.nn as nn
 import torch.optim as optim
 import pytorch_lightning as pl
 from torchvision.models import resnet18
+from torchmetrics import Accuracy
 
 class ResNetModule(pl.LightningModule):
     def __init__(self):
@@ -36,6 +37,9 @@ class ResNetModule(pl.LightningModule):
         x, y = batch
         y_hat = self(x)
         loss = nn.CrossEntropyLoss()(y_hat, y)
+        accuracy = Accuracy()
+        acc = accuracy(y_hat, y)
+        self.log('accuracy', acc)
         self.log('test_loss', loss)
         return loss
 
