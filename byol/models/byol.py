@@ -14,7 +14,7 @@ class BYOL(pl.LightningModule):
         self.hparams.update(hparams)
 
         if model is None:
-            resnet = models.resnet18(pretrained=False)
+            resnet = models.resnet18(pretrained=False, num_classes=10)
             self.backbone = nn.Sequential(*list(resnet.children())[:-1])
             self.target_backbone = nn.Sequential(*list(resnet.children())[:-1])
         else:
