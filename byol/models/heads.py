@@ -1,7 +1,7 @@
 import torch.nn as nn
 
 class BYOLProjectionHead(nn.Module):
-    def __init__(self, input_dim: int = 2048, hidden_dim: int = 4096, output_dim: int = 256) -> None:
+    def __init__(self, input_dim: int = 512, hidden_dim: int = 1024, output_dim: int = 256) -> None:
         super(BYOLProjectionHead, self).__init__()
 
         layers = [
@@ -18,7 +18,7 @@ class BYOLProjectionHead(nn.Module):
 
 
 class BYOLPredictionHead(nn.Module):
-    def __init__(self, input_dim: int = 256, hidden_dim: int = 4096, output_dim: int = 256) -> None:
+    def __init__(self, input_dim: int = 256, hidden_dim: int = 1024, output_dim: int = 256) -> None:
         super(BYOLPredictionHead, self).__init__()
 
         layers = [
