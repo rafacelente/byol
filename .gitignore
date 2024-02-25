@@ -2,3 +2,7 @@
 data
 **/__pycache__/*
 *.ipynb_checkpoints
+examples/annotations/*
+examples/images/*
+examples/annotations.tar.gz
+examples/images.tar.gz

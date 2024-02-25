@@ -4,14 +4,21 @@ import torch.nn as nn
 import torch
 import pytorch_lightning as pl
 import torchvision.models as models
-from typing import Optional, Dict
+from typing import Optional, Dict, Literal
 
 
 class BYOL(pl.LightningModule):
-    def __init__(self, hparams: Optional[Dict]=None, model: Optional[nn.Module]=None):
+    def __init__(
+            self, 
+            hparams: Optional[Dict]=None, 
+            model: Optional[nn.Module]=None,
+            batch_type: Optional[Literal["tuple", "dict"]]="tuple",
+            ):
         super().__init__()
         hparams = get_default_byol_hparams() if hparams is None else hparams
         self.hparams.update(hparams)
+
+        self.batch_type = 1 if batch_type == "tuple" else 0
 
         if model is None:
             resnet = models.resnet18(pretrained=False, num_classes=10)
@@ -70,7 +77,12 @@ class BYOL(pl.LightningModule):
         update_momentum(self.backbone, self.target_backbone, momentum)
         update_momentum(self.projection_head, self.target_projection_head, momentum)
 
-        x1, x2 = batch[0]
+        if self.batch_type:
+            x1, x2 = batch[0]
+        else:
+            print(batch)
+            x1, x2 = batch["image"], batch["mask"]
+
         p_theta_1 = self.forward(x1)
         z_epsilon_1 = self.forward_target(x1)
         p_theta_2 = self.forward(x2)
