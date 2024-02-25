@@ -12,13 +12,14 @@ class BYOL(pl.LightningModule):
             self, 
             hparams: Optional[Dict]=None, 
             model: Optional[nn.Module]=None,
-            batch_type: Optional[Literal["tuple", "dict"]]="tuple",
-            ):
+            batch_type: Literal["tuple", "dict"]="tuple"
+        ):
         super().__init__()
         hparams = get_default_byol_hparams() if hparams is None else hparams
         self.hparams.update(hparams)
 
-        self.batch_type = 1 if batch_type == "tuple" else 0
+        # Batch type depends on the dataloader
+        self.batch_type = True if batch_type == "tuple" else False
 
         if model is None:
             resnet = models.resnet18(pretrained=False, num_classes=10)
@@ -77,11 +78,11 @@ class BYOL(pl.LightningModule):
         update_momentum(self.backbone, self.target_backbone, momentum)
         update_momentum(self.projection_head, self.target_projection_head, momentum)
 
+        # FIXME: This is a temporary fix for the batch type
         if self.batch_type:
             x1, x2 = batch[0]
         else:
-            print(batch)
-            x1, x2 = batch["image"], batch["mask"]
+            x1, x2 = batch["image"].float(), batch["mask"].float()
 
         p_theta_1 = self.forward(x1)
         z_epsilon_1 = self.forward_target(x1)
