@@ -23,11 +23,13 @@ class BYOL(pl.LightningModule):
 
         if model is None:
             resnet = models.resnet18(pretrained=False, num_classes=10)
+            # In the models.resnet18, the last layer is a fully connected layer with 512 input features and 10 output features
             self.backbone = nn.Sequential(*list(resnet.children())[:-1])
-            self.target_backbone = nn.Sequential(*list(resnet.children())[:-1])
+            self.target_backbone = nn.Sequential(*list(resnet.children())[:-1]) # -1 because we don't fc layers
         else:
-            self.backbone = model
-            self.target_backbone = model
+            # In the unet model, the last layer a sequential layer with a avgpool and fc layer
+            self.backbone = nn.Sequential(*list(model.children()), nn.AdaptiveAvgPool2d((1, 1)))
+            self.target_backbone = nn.Sequential(*list(model.children()), nn.AdaptiveAvgPool2d((1, 1)))
 
         # Online network
         self.projection_head = BYOLProjectionHead(
@@ -82,7 +84,8 @@ class BYOL(pl.LightningModule):
         if self.batch_type:
             x1, x2 = batch[0]
         else:
-            x1, x2 = batch["image"].float(), batch["mask"].float()
+            x1, x2 = batch[0].float(), batch[1].float()
+            
 
         p_theta_1 = self.forward(x1)
         z_epsilon_1 = self.forward_target(x1)

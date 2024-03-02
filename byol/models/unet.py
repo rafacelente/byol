@@ -5,9 +5,13 @@ from byol.metrics import SegmentationIOU
 import torch
 
 class UNETModule(pl.LightningModule):
-    def __init__(self):
+    def __init__(
+            self,
+            encoder_name = "resnet18",
+            ):
         super(UNETModule, self).__init__()
-        self.model = smp.Unet("resnet18", encoder_weights=None, in_channels=3, classes=1)
+        self.encoder_name = encoder_name
+        self.model = smp.Unet(encoder_name=encoder_name, encoder_weights=None, in_channels=3, classes=1)
         self.loss_fn = smp.losses.DiceLoss(smp.losses.BINARY_MODE, from_logits=True)
         self.validation_iou = SegmentationIOU(
             reduction="micro-imagewise",
