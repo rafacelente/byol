@@ -5,6 +5,7 @@ import torch
 import pytorch_lightning as pl
 import torchvision.models as models
 from typing import Optional, Dict, Literal
+from collections import OrderedDict
 
 
 class BYOL(pl.LightningModule):
@@ -28,8 +29,13 @@ class BYOL(pl.LightningModule):
             self.target_backbone = nn.Sequential(*list(resnet.children())[:-1]) # -1 because we don't fc layers
         else:
             # In the unet model, the last layer a sequential layer with a avgpool and fc layer
-            self.backbone = nn.Sequential(*list(model.children()), nn.AdaptiveAvgPool2d((1, 1)))
-            self.target_backbone = nn.Sequential(*list(model.children()), nn.AdaptiveAvgPool2d((1, 1)))
+            self.backbone = nn.Sequential()
+            self.target_backbone = nn.Sequential()
+            for name, module in list(model.named_children()):
+                self.backbone.add_module(name, module)
+                self.target_backbone.add_module(name, module)
+            self.backbone.add_module("avgpool", nn.AdaptiveAvgPool2d((1, 1)))
+            self.backbone.add_module("avgpool", nn.AdaptiveAvgPool2d((1, 1)))
 
         # Online network
         self.projection_head = BYOLProjectionHead(
