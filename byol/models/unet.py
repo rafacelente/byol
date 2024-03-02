@@ -30,8 +30,8 @@ class UNETModule(pl.LightningModule):
         )
 
     @classmethod
-    def from_byol(cls, byol_module):
-        unet = cls()
+    def from_byol(cls, byol_module, encoder_name="resnet18"):
+        unet = cls(encoder_name=encoder_name)
         unet.model.encoder.load_state_dict(byol_module.backbone.state_dict())
         return unet
 
