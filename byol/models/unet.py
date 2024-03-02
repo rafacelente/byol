@@ -32,7 +32,11 @@ class UNETModule(pl.LightningModule):
     @classmethod
     def from_byol(cls, byol_module):
         unet = cls()
-        unet.model.encoder.load_state_dict(byol_module.backbone.state_dict())
+        # The avg pool doesnt add any parameters, so we assume the size of state dict is the same
+        modified_state_dict = {}
+        for model_key, backbone_value in zip(unet.model.encoder.state_dict().keys(), byol_module.backbone.state_dict().values()):
+            modified_state_dict[model_key] = backbone_value
+        unet.model.encoder.load_state_dict(modified_state_dict)
         return unet
 
     def forward(self, x):
