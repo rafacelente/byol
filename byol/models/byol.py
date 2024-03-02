@@ -35,7 +35,7 @@ class BYOL(pl.LightningModule):
                 self.backbone.add_module(name, module)
                 self.target_backbone.add_module(name, module)
             self.backbone.add_module("avgpool", nn.AdaptiveAvgPool2d((1, 1)))
-            self.backbone.add_module("avgpool", nn.AdaptiveAvgPool2d((1, 1)))
+            self.target_backbone.add_module("avgpool", nn.AdaptiveAvgPool2d((1, 1)))
 
         # Online network
         self.projection_head = BYOLProjectionHead(
