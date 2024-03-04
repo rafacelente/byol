@@ -4,5 +4,12 @@ data
 *.ipynb_checkpoints
 examples/annotations/*
 examples/images/*
+!examples/images/byol_result_example.png 
+!examples/images/Byol1.png
+!examples/images/Byol2.png examples/images/Byol3.png
+!examples/images/byol_overview.png
+!examples/images/ByolTransforms.png
+!examples/images/byol_architecture.png
+!examples/images/results_byol.png
 examples/annotations.tar.gz
 examples/images.tar.gz

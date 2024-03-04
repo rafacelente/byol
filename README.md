@@ -8,6 +8,8 @@ byol allows your models to learn useful representations without relying on label
 
 Some examples and explanations of the BYOL's functionality for tuning tasks can be found on the `examples` directory.
 
+![BYOL result example](examples/images/byol_result_example.png)
+
 ## Usage
 
 Use  `BYOLTransforms` from `byol.utils` to apply transforms to your dataset.
